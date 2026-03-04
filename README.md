@@ -14,20 +14,19 @@ GuardLens: Next-Gen Web Security Auditor
 ---
 
 🛠️ Technology Stack
-* **Language:** Python 3.13
-* **Framework:** Streamlit (Web UI)
-* **Networking:** Requests, SMTPLib
-* **Design:** Custom CSS & Markdown integration
+* Language: Python 3.13
+* Framework: Streamlit (Web UI)
+* Networking: Requests, SMTPLib
+* Design: Custom CSS & Markdown integration
 
 ---
 
 🚀 Installation & Usage
 
-1. Clone the Repository:
+1. **Clone the Repository:**
    ```bash
    git clone [https://github.com/your-username/GuardLens-Scanner.git](https://github.com/your-username/GuardLens-Scanner.git)
    cd GuardLens-Scanner
-   ---
 2. Install Dependencies:
 
 Bash
