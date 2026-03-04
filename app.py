@@ -72,19 +72,25 @@ else:
         target = st.text_input("Target Domain", placeholder="example.com")
         launch_button = st.form_submit_button("Launch Audit") # Ab ye Enter se chalega!
         
-        if launch_button:
+       if launch_button:
             if target:
-                log_area = st.empty() # Ek khali jagah banao logs ke liye
+                log_area = st.empty() # Logs dikhane ki jagah
+                full_log = ""         # Saare logs yahan jama honge
+                
                 with st.spinner("Scanning..."):
-                    # Ab terminal ki jagah screen pe dikhao
-                    log_area.info(f"[*] Starting audit for {target}...")
+                    # Line 1
+                    full_log += "[*] Starting audit for " + target + "...\n\n"
+                    log_area.info(full_log)
                     
-                    # Backend calls
+                    # Backend call 1
                     find_subdomains(target)
-                    log_area.info("[+] Subdomain discovery finished.")
+                    full_log += "[+] Subdomain discovery finished.\n\n"
+                    log_area.info(full_log)
                     
+                    # Backend call 2
                     check_security(f"http://{target}")
-                    log_area.info("[+] Header analysis finished.")
+                    full_log += "[+] Header analysis finished.\n\n"
+                    log_area.info(full_log)
                     
                 st.success(f"Audit for {target} completed!")
                 st.balloons()
