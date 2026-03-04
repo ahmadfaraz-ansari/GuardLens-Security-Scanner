@@ -7,13 +7,12 @@ import time
 from recon import find_subdomains
 from vuln_scanner import check_security
 
-# Load secrets from .env file
+# Load secrets
 load_dotenv()
 S_EMAIL = os.getenv("SENDER_EMAIL")
 S_PASS = os.getenv("SENDER_PASS")
 R_EMAIL = os.getenv("RECEIVER_EMAIL")
 
-# --- EMAIL ALERT FUNCTION ---
 def send_login_alert(user_mail):
     try:
         msg = EmailMessage()
@@ -21,15 +20,13 @@ def send_login_alert(user_mail):
         msg['Subject'] = 'GuardLens Access Notification'
         msg['From'] = S_EMAIL
         msg['To'] = R_EMAIL
-        
         server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
         server.login(S_EMAIL, S_PASS)
         server.send_message(msg)
         server.quit()
-    except Exception as e:
-        st.sidebar.error(f"Alert Failed: Check .env settings")
+    except Exception:
+        st.sidebar.error("Alert Failed: Check .env")
 
-# --- UI SETUP ---
 st.set_page_config(page_title="GuardLens Web Security", page_icon="🛡️")
 
 if 'logged_in' not in st.session_state:
@@ -38,18 +35,16 @@ if 'logged_in' not in st.session_state:
 # --- LOGIN PAGE ---
 if not st.session_state.logged_in:
     st.title("🔐 GuardLens Access Control")
-    
-    # Form ka use karne se "Enter" key kaam karne lagegi
     with st.form("login_form"):
         email = st.text_input("Corporate Email")
         password = st.text_input("Access Token", type="password")
-        submit_button = st.form_submit_button("Authenticate") 
+        submit_button = st.form_submit_button("Authenticate")
         
         if submit_button:
-            if email and password == "student_2026": 
+            if email and password == "student_2026":
                 st.session_state.logged_in = True
                 send_login_alert(email)
-                st.success("Access Granted! Initializing Suite...")
+                st.success("Access Granted!")
                 time.sleep(1)
                 st.rerun()
             else:
@@ -64,33 +59,37 @@ else:
 
     st.title("🌐 Automated Web Security Auditor")
     
-    # Dashboard Form
     with st.form("audit_form"):
         target = st.text_input("Target Domain", placeholder="example.com")
-        launch_button = st.form_submit_button("Launch Audit") 
+        launch_button = st.form_submit_button("Launch Audit")
         
         if launch_button:
             if target:
-                log_area = st.empty() 
-                full_log = ""         
+                log_area = st.empty()
+                full_log = ""
                 
                 with st.spinner("Scanning..."):
-                    # Step 1
-                    full_log += "[*] Starting audit for " + target + "...\n\n"
+                    full_log += f"[*] Starting audit for {target}...\n\n"
                     log_area.info(full_log)
                     
-                    # Backend call 1
+                    # 1. Subdomains
                     find_subdomains(target)
                     full_log += "[+] Subdomain discovery finished.\n\n"
                     log_area.info(full_log)
                     
-                    # Backend call 2
-                    check_security(f"http://{target}")
+                    # 2. Vulnerability Scan
+                    risks = check_security(f"http://{target}")
                     full_log += "[+] Header analysis finished.\n\n"
-                    log_area.info(full_log)
                     
-                st.success(f"Audit for {target} completed!")
+                    if risks:
+                        for r in risks:
+                            full_log += f"{r}\n"
+                    else:
+                        full_log += "[+] No major header risks found!\n"
+                    
+                    log_area.info(full_log)
+                
+                st.success("Audit Completed!")
                 st.balloons()
             else:
                 st.warning("Please enter a domain first!")
-                
