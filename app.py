@@ -36,7 +36,6 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 # --- LOGIN PAGE ---
-# --- LOGIN PAGE (Updated with Form for 'Enter' Key) ---
 if not st.session_state.logged_in:
     st.title("🔐 GuardLens Access Control")
     
@@ -44,11 +43,10 @@ if not st.session_state.logged_in:
     with st.form("login_form"):
         email = st.text_input("Corporate Email")
         password = st.text_input("Access Token", type="password")
-        submit_button = st.form_submit_button("Authenticate") # Ye "Enter" support karta hai
+        submit_button = st.form_submit_button("Authenticate") 
         
         if submit_button:
-            # Apne naya wala password yahan check karo
-            if email and password == "student_2026": # Jo tune change kiya tha
+            if email and password == "student_2026": 
                 st.session_state.logged_in = True
                 send_login_alert(email)
                 st.success("Access Granted! Initializing Suite...")
@@ -58,7 +56,6 @@ if not st.session_state.logged_in:
                 st.error("Invalid Credentials.")
 
 # --- MAIN SCANNER PAGE ---
-# --- MAIN SCANNER PAGE (Updated for Enter Key) ---
 else:
     st.sidebar.title("🛡️ GuardLens Pro")
     if st.sidebar.button("Logout"):
@@ -67,18 +64,18 @@ else:
 
     st.title("🌐 Automated Web Security Auditor")
     
-    # Dashboard ko bhi Form mein daal dete hain
+    # Dashboard Form
     with st.form("audit_form"):
         target = st.text_input("Target Domain", placeholder="example.com")
-        launch_button = st.form_submit_button("Launch Audit") # Ab ye Enter se chalega!
+        launch_button = st.form_submit_button("Launch Audit") 
         
-       if launch_button:
+        if launch_button:
             if target:
-                log_area = st.empty() # Logs dikhane ki jagah
-                full_log = ""         # Saare logs yahan jama honge
+                log_area = st.empty() 
+                full_log = ""         
                 
                 with st.spinner("Scanning..."):
-                    # Line 1
+                    # Step 1
                     full_log += "[*] Starting audit for " + target + "...\n\n"
                     log_area.info(full_log)
                     
@@ -94,3 +91,6 @@ else:
                     
                 st.success(f"Audit for {target} completed!")
                 st.balloons()
+            else:
+                st.warning("Please enter a domain first!")
+                
